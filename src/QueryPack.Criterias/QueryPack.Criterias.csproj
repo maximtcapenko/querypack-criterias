@@ -4,15 +4,20 @@
     <TargetFrameworks>net6.0;netstandard2.1</TargetFrameworks>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Description>Type-safe LINQ based criteria builder</Description>
-    <PackageDescription>Type-safe LINQ based criteria builder</PackageDescription>
+    <Description>Fluent criteria builder that builds type-safe expression predicates</Description>
+    <PackageDescription>Fluent criteria builder that builds type-safe expression predicates</PackageDescription>
+    <RepositoryUrl>https://github.com/maximtcapenko/querypack-criterias</RepositoryUrl>
     <OutputType>Library</OutputType>
     <PackageTags>criterias</PackageTags>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageTags>querypack;criterias</PackageTags>
   </PropertyGroup>
-
+  <ItemGroup>
+    <None Include="..\..\LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
