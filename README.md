@@ -11,9 +11,9 @@ dotnet add package QueryPack.Criterias
 ```c#
 class EntitySearchBuilder : GenericCriteriaBuilder<Entity, SearchModel>
 {
-   public UserSearchBuilder()
+   public EntitySearchBuilder()
    {
-         With(m => e => e.Name.StartsWith(m.Property),
+         With(m => e => e.Property.StartsWith(m.Property),
                r => r.When(m => !string.IsNullOrEmpty(m.Property)));
    }
 }
