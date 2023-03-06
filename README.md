@@ -1,10 +1,10 @@
-# QueryPack.Criteria
-Is an abstraction layer that allows for the creation and storage of reusable predicates. This layer implements a fluent criteria builder that builds type-safe expression predicates. These predicates can be used to filter and query data from various data sources, that support LINQ 
+# QueryPack.Criterias
+Is a simple abstraction layer that allows for the creation and storage of reusable predicates. This layer implements a fluent criteria builder that builds type-safe expression predicates. These predicates can be used to filter and query data from various data sources, that support LINQ 
 
 ## Getting Started
 1. Install the package into your project
 ```
-dotnet add package QueryPack.Criteria
+dotnet add package QueryPack.Criterias
 ```
 2. Create and configure your criteria builder
 
