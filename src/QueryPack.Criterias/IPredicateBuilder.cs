@@ -17,7 +17,7 @@
     public interface IRestriction<TModel>
          where TModel : class
     {
-        void When(Func<TModel, bool> validation);
+        void When(Expression<Func<TModel, bool>> validation);
     }
 
     public interface ICriteriaConfigurer<TEntity, TModel>

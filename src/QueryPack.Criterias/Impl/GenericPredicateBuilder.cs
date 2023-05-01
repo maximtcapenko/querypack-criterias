@@ -20,7 +20,7 @@
 
         internal class GroupCriteriaConfigurer : IGroupCriteriaConfigurer<TEntity, TModel>
         {
-            private readonly Dictionary<Operator, List<Criteria>> _criterias = new Dictionary<Operator,List<Criteria>>();
+            private readonly Dictionary<Operator, List<Criteria>> _criterias = new Dictionary<Operator, List<Criteria>>();
 
             public IScopeCriteriaConfigurer<TEntity, TModel> With(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory, Action<IRestriction<TModel>> restriction = null)
             {
@@ -29,7 +29,7 @@
                 return criteriaBuilder;
             }
 
-            public Expression<Func<TEntity, bool>> Build(TModel model) 
+            public Expression<Func<TEntity, bool>> Build(TModel model)
                 => GenericCriteriaBuilder<TEntity, TModel>.Build(_criterias, model);
         }
 
@@ -55,7 +55,7 @@
                 return this;
             }
 
-            public IScopeCriteriaConfigurer<TEntity, TModel> Or(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory, 
+            public IScopeCriteriaConfigurer<TEntity, TModel> Or(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory,
                 Action<IRestriction<TModel>> restriction = null)
             {
                 var criteria = new Criteria(predicateFactory);
@@ -134,28 +134,42 @@
 
         internal class Criteria : IRestriction<TModel>
         {
-            private Func<TModel, bool> _restriction;
+            private readonly List<Expression<Func<TModel, bool>>> _restrictions = new List<Expression<Func<TModel, bool>>>();
             private readonly Func<TModel, Expression<Func<TEntity, bool>>> _predicateFactory;
+            private Func<TModel, bool> _compiledRestriction;
 
             public Criteria(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory)
             {
                 _predicateFactory = predicateFactory;
             }
 
-            public void When(Func<TModel, bool> restriction)
+            public void When(Expression<Func<TModel, bool>> restriction)
             {
-                _restriction = restriction;
+                _restrictions.Add(restriction);
             }
 
             public Expression<Func<TEntity, bool>> GetWhenValid(TModel model)
             {
-                if (_restriction != null && _restriction(model))
-                    return _predicateFactory(model);
+                if (_restrictions.Any())
+                {
+                    if (_compiledRestriction == null)
+                    {
+                        var expression = _restrictions[0];
+                        for(int i = 1 ; i < _restrictions.Count; i ++)
+                        {
+                             expression = expression.And(_restrictions[i]);
+                        }
 
-                else if (_restriction == null)
-                    return _predicateFactory(model);
+                        _compiledRestriction = expression.Compile();
+                    }
 
-                return null;
+                    if (_compiledRestriction(model))
+                        return _predicateFactory(model);
+                    else
+                        return null;
+                }
+
+                return _predicateFactory(model);
             }
         }
 
