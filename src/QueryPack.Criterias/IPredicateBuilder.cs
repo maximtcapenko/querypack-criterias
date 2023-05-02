@@ -11,12 +11,14 @@
             Action<IRestriction<TModel>> restriction = default);
 
         Expression<Func<TEntity, bool>> Build(TModel search);
-
     }
 
     public interface IRestriction<TModel>
          where TModel : class
     {
+        ///<summary>
+        /// Validates restriction
+        ///</summary>
         void When(Expression<Func<TModel, bool>> validation);
     }
 
