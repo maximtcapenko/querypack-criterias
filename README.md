@@ -29,3 +29,14 @@ class EntitySearchBuilder : GenericCriteriaBuilder<Entity, SearchModel>
 ICriteriaBuilder<Entity, SearchModel> _criteriaBuilder;
 
 Expression<Func<Entity, bool>> criteria = _criteriaBuilder.Build(searchModel);
+```
+3. Implement an in-memory search using the `UseInMemoryTextSearchBy` extension method.
+```c#
+IEnumerable<Entity> entities;
+
+var results = entities.UseInMemoryTextSearchBy(builder => 
+      builder.IncludeField(e => e.Property).When(e => !string.IsNullOrEmpty(e.Property)), 
+                new SearchEntity
+                {
+                    TextSearch = "Test String"
+                });
