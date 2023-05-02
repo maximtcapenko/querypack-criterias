@@ -62,9 +62,9 @@ namespace QueryPack.Criterias.ImMemory.Impl
                     expression = expression == null ? likeCallExpression as Expression : Expression.Or(expression, likeCallExpression);
                 }
 
-                if (expression is null) return default;
+                if (expression == null) return default;
 
-                if (_validator is not null)
+                if (_validator != null)
                 {
                     var call = Expression.Invoke(_validator, parameter);
                     var checkExpression = Expression.Equal(call, Expression.Constant(true));
