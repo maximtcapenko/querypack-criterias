@@ -5,3 +5,6 @@ simpleExample.Run();
 
 var configExample = new SearchConfigurationExample();
 configExample.Run();
+
+var textSearchExample = new  InMemoryTextSearch();
+textSearchExample.Run();

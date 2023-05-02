@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Text;
 
@@ -27,7 +28,7 @@
 
             var parameter = first.Parameters[0];
 
-            var visitor = new SubstExpressionVisitor(parameter);            
+            var visitor = new SubstExpressionVisitor(parameter);
             var body = Expression.Or(first.Body, visitor.Visit(second.Body));
 
             return Expression.Lambda<Func<T, bool>>(body, parameter);
@@ -54,6 +55,15 @@
             }
             sb.Append(path[i]);
             return sb.ToString();
+        }
+
+        public static IEnumerable<MemberExpression> GetPropertyExpressions<T>(this Expression<T> property)
+        {
+            if (property.Body is NewExpression newExpression)
+                foreach (var arg in newExpression.Arguments.OfType<MemberExpression>())
+                    yield return arg;
+            else
+                yield return property.Body as MemberExpression;
         }
     }
 
