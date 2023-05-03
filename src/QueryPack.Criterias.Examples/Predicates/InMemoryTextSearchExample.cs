@@ -2,7 +2,7 @@ namespace QueryPack.Criterias.Examples.Predicates
 {
     using ImMemory;
 
-    internal class InMemoryTextSearch
+    internal class InMemoryTextSearchExample
     {
         class SearchUser : ITextSearch
         {

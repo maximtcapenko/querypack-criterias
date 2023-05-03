@@ -6,5 +6,8 @@ simpleExample.Run();
 var configExample = new SearchConfigurationExample();
 configExample.Run();
 
-var textSearchExample = new  InMemoryTextSearch();
+var textSearchExample = new  InMemoryTextSearchExample();
 textSearchExample.Run();
+
+var orderExample = new  InMemoryOrderExample();
+orderExample.Run();
