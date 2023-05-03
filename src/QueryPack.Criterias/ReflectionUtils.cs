@@ -3,9 +3,9 @@ namespace QueryPack.Criterias
     using System;
     using System.Linq;
 
-    internal static class ReflectionUtils
+    public static class ReflectionUtils
     {
-        internal static void ProcessGenericInterfaceImpls(Type serviceType, Type interfaceType, Action<Type, Type, string> action)
+        public static void ProcessGenericInterfaceImpls(Type serviceType, Type interfaceType, Action<Type, Type, string> action)
         {
             if (serviceType.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == interfaceType))
             {
@@ -17,5 +17,13 @@ namespace QueryPack.Criterias
                 }
             }
         }
+
+        public static Type GetNullableType(Type type)
+            => type switch
+            {
+                Type t when t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>) => t,
+                Type t when t.IsClass => t,
+                Type t => typeof(Nullable<>).MakeGenericType(t)
+            };
     }
 }
