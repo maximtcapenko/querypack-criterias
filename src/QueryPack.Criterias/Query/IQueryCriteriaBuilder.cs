@@ -7,10 +7,10 @@ namespace QueryPack.Criterias.Query
         where TEntity : class 
         where TModel : class
     {
-        ICriteriaConfigurer<TEntity, TModel> AddPredicate(Func<TModel, Expression<Func<TEntity, bool>>> criteriaFactory,
-            Action<IRestriction<TModel>> restriction = default);
- 
-        IQueryCriteriaBuilder<TEntity, TModel> AddOrder<TProperty>(Expression<Func<TEntity, TProperty>> property,
-          Action<IOrderBuilder<TModel>> orderBuilder);
+        ///<summary>
+        /// Adds a custom defined statement to the query visitors pipeline
+        ///</summary>
+        IQueryCriteriaBuilder<TEntity, TModel> Add(IQueryVisitorBuilder<TEntity, TModel> queryVisitorBuilder);
+
     }
 }
