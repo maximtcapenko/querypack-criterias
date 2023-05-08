@@ -54,3 +54,4 @@ var query = new OrderModel
 };
 var ordered = entities.UseInMemoryOrderBy(query,
                     optionsConfigurer => optionsConfigurer.AddComparerFactory(new EnumNameComparerFactory()));
+```

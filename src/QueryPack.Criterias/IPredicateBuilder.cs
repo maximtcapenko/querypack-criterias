@@ -7,9 +7,14 @@
         where TEntity : class
         where TModel : class
     {
+        ///<summary>
+        /// Initializes criteria builder pipeline
+        ///</summary>
         ICriteriaConfigurer<TEntity, TModel> With(Func<TModel, Expression<Func<TEntity, bool>>> criteriaFactory,
             Action<IRestriction<TModel>> restriction = default);
-
+        ///<summary>
+        /// Builds predicate based on search model
+        ///</summary>
         Expression<Func<TEntity, bool>> Build(TModel search);
     }
 

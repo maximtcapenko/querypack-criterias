@@ -128,7 +128,7 @@
             }
         }
 
-        private static string ResolveMemberPath(MemberExpression arg)
+        public static string ResolveMemberPath(MemberExpression arg)
         {
             var path = new List<string>();
             do

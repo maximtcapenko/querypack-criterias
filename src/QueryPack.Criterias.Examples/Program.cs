@@ -9,5 +9,8 @@ configExample.Run();
 var textSearchExample = new  InMemoryTextSearchExample();
 textSearchExample.Run();
 
-var orderExample = new  InMemoryOrderExample();
+var inMemOrderExample = new  InMemoryOrderExample();
+inMemOrderExample.Run();
+
+var orderExample = new ExpressionOrderExample();
 orderExample.Run();

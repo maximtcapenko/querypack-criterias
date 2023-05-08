@@ -1,4 +1,4 @@
-namespace QueryPack.Criterias.ImMemory
+namespace QueryPack.Criterias
 {
     using System.Collections.Generic;
 
