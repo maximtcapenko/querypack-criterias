@@ -80,6 +80,6 @@ var queryModel = new EntityQuery
 IQueryable<Entity> query;
 
 IQueryVisitorBuilder<Entity, EntityQuery> _visitorBuilder;
-IQueryVisitor<Entity> visior = _visitorBuilder.GetVisitor(queryModel);
+IQueryVisitor<Entity> visitor = _visitorBuilder.GetVisitor(queryModel);
 
 query = visitor.Visit(query);
