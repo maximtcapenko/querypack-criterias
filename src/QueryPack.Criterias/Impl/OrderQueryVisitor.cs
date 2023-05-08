@@ -34,7 +34,7 @@ namespace QueryPack.Criterias.Impl
             if (validVisit)
             {
                 var container = _directionFactory(_queryModel);
-                var paramExpression = Expression.Parameter(typeof(TEntity), "e");
+                var paramExpression = _property.Parameters.First();
                 var method = GetType().GetMethod(nameof(this.SetOrder), BindingFlags.Instance | BindingFlags.NonPublic);
 
                 foreach (var expression in _property.GetPropertyExpressions())
