@@ -9,6 +9,12 @@ namespace QueryPack.Criterias.Extensions
 
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Registers <see cref="ICriteriaBuilder{,}"/> and <see cref="IQueryVisitorBuilder{,}"/>
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="assemblies"></param>
+        /// <returns></returns>
         public static IServiceCollection AddCriteriaBuilders(this ServiceCollection services, params Assembly[] assemblies)
         {
             var registerCriteriaBuilderMethod = typeof(ServiceCollectionExtensions).GetMethod(nameof(RegisterCriteriaBuilder), BindingFlags.Static | BindingFlags.NonPublic);
