@@ -18,7 +18,7 @@
             Or
         }
 
-        internal class GroupCriteriaConfigurer : IGroupCriteriaConfigurer<TEntity, TModel>
+        class GroupCriteriaConfigurer : IGroupCriteriaConfigurer<TEntity, TModel>
         {
             private readonly Dictionary<Operator, List<Criteria>> _criterias = new Dictionary<Operator, List<Criteria>>();
 
@@ -33,7 +33,7 @@
                 => GenericCriteriaBuilder<TEntity, TModel>.Build(_criterias, model);
         }
 
-        internal class ScopeCriteriaConfigurer : IScopeCriteriaConfigurer<TEntity, TModel>
+        class ScopeCriteriaConfigurer : IScopeCriteriaConfigurer<TEntity, TModel>
         {
             private readonly Dictionary<Operator, List<Criteria>> _criterias;
 
@@ -70,7 +70,7 @@
             }
         }
 
-        internal class CriteriaConfigurer : ICriteriaConfigurer<TEntity, TModel>
+        class CriteriaConfigurer : ICriteriaConfigurer<TEntity, TModel>
         {
             private readonly Dictionary<Operator, List<Criteria>> _criterias;
 
@@ -132,7 +132,7 @@
             }
         }
 
-        internal class Criteria : IRestriction<TModel>
+        class Criteria : IRestriction<TModel>
         {
             private readonly List<Expression<Func<TModel, bool>>> _restrictions = new List<Expression<Func<TModel, bool>>>();
             private readonly Func<TModel, Expression<Func<TEntity, bool>>> _predicateFactory;
@@ -155,9 +155,9 @@
                     if (_compiledRestriction == null)
                     {
                         var expression = _restrictions[0];
-                        for(int i = 1 ; i < _restrictions.Count; i ++)
+                        for (int i = 1; i < _restrictions.Count; i++)
                         {
-                             expression = expression.And(_restrictions[i]);
+                            expression = expression.And(_restrictions[i]);
                         }
 
                         _compiledRestriction = expression.Compile();
@@ -182,7 +182,7 @@
             return criteriaBuilder;
         }
 
-        internal static Expression<Func<TEntity, bool>> Build(IDictionary<Operator, List<Criteria>> criterias, TModel model)
+        static Expression<Func<TEntity, bool>> Build(IDictionary<Operator, List<Criteria>> criterias, TModel model)
         {
             if (!criterias.Any())
                 return e => true;

@@ -54,3 +54,32 @@ var query = new OrderModel
 };
 var ordered = entities.UseInMemoryOrderBy(query,
                     optionsConfigurer => optionsConfigurer.AddComparerFactory(new EnumNameComparerFactory()));
+```
+7. Create a query criteria configuration and inject query visitor
+```c#
+class EntityQueryConfiguration : IQueryConfiguration<Entity, EntityQuery>
+{
+    public void Configure(IQueryCriteriaBuilder<User, UserQuery> builder)
+    {
+        builder.AddPredicate(m => e => e.Property.StartsWith(m.SearchProperty),
+            r => r.When(m => !string.IsNullOrEmpty(m.SearchProperty)));
+
+        builder.AddOrder(e => new { e.Property, e.PropertyTwo }, builder => builder.From(e => e.OrderBy));
+    }
+}
+
+var queryModel = new EntityQuery
+{
+    SearchProperty = "search string",
+    OrderBy = new Dictionary<string, OrderDirection>
+    {
+        ["Property"] = OrderDirection.Asc,
+    }
+};
+
+IQueryable<Entity> query;
+
+IQueryVisitorBuilder<TEntity, EntityQuery> _visitorBuilder;
+IQueryVisitor<Entity> visior = _visitorBuilder.GetVisitor(queryModel);
+
+query = visitor.Visit(query);
