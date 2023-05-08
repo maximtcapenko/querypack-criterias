@@ -6,6 +6,10 @@ namespace QueryPack.Criterias.Query
         where TEntity : class
         where TModel : class
     {
-         void Configure(IQueryCriteriaBuilder<TEntity, TModel> builder);
+        /// <summary>
+        /// Configures query builder <see cref="IQueryCriteriaBuilder{Entity, TModel}"/>
+        /// </summary>
+        /// <param name="builder"></param>
+        void Configure(IQueryCriteriaBuilder<TEntity, TModel> builder);
     }
 }

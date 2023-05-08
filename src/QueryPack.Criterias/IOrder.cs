@@ -7,7 +7,9 @@ namespace QueryPack.Criterias
         Asc = 1,
         Desc
     }
-    
+    /// <summary>
+    /// The basic interface which contains the definition of order statements
+    /// </summary>
     public interface IOrder
     {
         Dictionary<string, OrderDirection> OrderBy { get; set; }

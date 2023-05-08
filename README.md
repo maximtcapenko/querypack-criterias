@@ -59,7 +59,7 @@ var ordered = entities.UseInMemoryOrderBy(query,
 ```c#
 class EntityQueryConfiguration : IQueryConfiguration<Entity, EntityQuery>
 {
-    public void Configure(IQueryCriteriaBuilder<User, UserQuery> builder)
+    public void Configure(IQueryCriteriaBuilder<Entity, EntityQuery> builder)
     {
         builder.AddPredicate(m => e => e.Property.StartsWith(m.SearchProperty),
             r => r.When(m => !string.IsNullOrEmpty(m.SearchProperty)));
@@ -79,7 +79,7 @@ var queryModel = new EntityQuery
 
 IQueryable<Entity> query;
 
-IQueryVisitorBuilder<TEntity, EntityQuery> _visitorBuilder;
+IQueryVisitorBuilder<Entity, EntityQuery> _visitorBuilder;
 IQueryVisitor<Entity> visior = _visitorBuilder.GetVisitor(queryModel);
 
 query = visitor.Visit(query);

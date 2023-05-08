@@ -34,7 +34,9 @@ namespace QueryPack.Criterias.ImMemory
 
             return builderInstance.Build(entities, query);
         }
-
+        /// <summary>
+        /// In memory order by user defined criterias
+        /// </summary>
         public static IEnumerable<TEntity> UseInMemoryOrderBy<TEntity, TProperty>(this IEnumerable<TEntity> entities, IOrder query, Expression<Func<TEntity, TProperty>> allowedProperties)
          where TEntity : class
         {
