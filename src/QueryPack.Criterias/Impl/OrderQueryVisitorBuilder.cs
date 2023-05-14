@@ -28,7 +28,6 @@ namespace QueryPack.Criterias.Impl
         {
             private readonly Expression<Func<TEntity, TProperty>> _property;
             private Func<TModel, Dictionary<string, OrderDirection>> _directionFactory;
-            private TModel _queryModel;
             private Func<TModel, bool> _innerValidate = e => true;
             private Func<TModel, bool> _validator;
 

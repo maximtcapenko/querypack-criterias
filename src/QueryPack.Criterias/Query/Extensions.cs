@@ -26,7 +26,7 @@ namespace QueryPack.Criterias.Query
         ///<summary>
         /// Adds a predicate statement to the query visitors pipeline
         ///</summary>
-        public static ICriteriaConfigurer<TEntity, TModel> AddPredicate<TEntity, TModel>(this IQueryCriteriaBuilder<TEntity, TModel> self,
+        public static ICriteriaConfigurator<TEntity, TModel> AddPredicate<TEntity, TModel>(this IQueryCriteriaBuilder<TEntity, TModel> self,
           Func<TModel, Expression<Func<TEntity, bool>>> criteriaFactory,
           Action<IRestriction<TModel>> restriction = default)
           where TEntity : class

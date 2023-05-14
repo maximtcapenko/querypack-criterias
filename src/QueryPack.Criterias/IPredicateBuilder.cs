@@ -10,7 +10,7 @@
         ///<summary>
         /// Initializes criteria builder pipeline
         ///</summary>
-        ICriteriaConfigurer<TEntity, TModel> With(Func<TModel, Expression<Func<TEntity, bool>>> criteriaFactory,
+        ICriteriaConfigurator<TEntity, TModel> With(Func<TModel, Expression<Func<TEntity, bool>>> criteriaFactory,
             Action<IRestriction<TModel>> restriction = default);
         ///<summary>
         /// Builds predicate based on search model
@@ -27,7 +27,7 @@
         void When(Expression<Func<TModel, bool>> validation);
     }
 
-    public interface ICriteriaConfigurer<TEntity, TModel>
+    public interface ICriteriaConfigurator<TEntity, TModel>
         where TEntity : class
         where TModel : class
     {
@@ -35,41 +35,41 @@
         /// And operand
         /// </summary>
         /// <param name="criteriaFactory"></param>
-        /// <param name="restriction">Restriction configurer</param>
+        /// <param name="restriction">Restriction configurator</param>
         /// <returns></returns>
-        ICriteriaConfigurer<TEntity, TModel> And(Func<TModel, Expression<Func<TEntity, bool>>> criteriaFactory,
+        ICriteriaConfigurator<TEntity, TModel> And(Func<TModel, Expression<Func<TEntity, bool>>> criteriaFactory,
             Action<IRestriction<TModel>> restriction = default);
         /// <summary>
         /// And operand
         /// </summary>
-        /// <param name="group">Group criterias configurer</param>
+        /// <param name="group">Group criterias configurator</param>
         /// <returns></returns>
-        ICriteriaConfigurer<TEntity, TModel> And(Action<IGroupCriteriaConfigurer<TEntity, TModel>> group);
+        ICriteriaConfigurator<TEntity, TModel> And(Action<IGroupCriteriaConfigurator<TEntity, TModel>> group);
         /// <summary>
         /// Or operand
         /// </summary>
         /// <param name="criteriaFactory"></param>
-        /// <param name="restriction">Restriction configurer</param>
+        /// <param name="restriction">Restriction configurator</param>
         /// <returns></returns>
-        ICriteriaConfigurer<TEntity, TModel> Or(Func<TModel, Expression<Func<TEntity, bool>>> criteriaFactory,
+        ICriteriaConfigurator<TEntity, TModel> Or(Func<TModel, Expression<Func<TEntity, bool>>> criteriaFactory,
             Action<IRestriction<TModel>> restriction = default);
         /// <summary>
         /// Or operand
         /// </summary>
-        /// <param name="group">Group criterias configurer</param>
+        /// <param name="group">Group criterias configurator</param>
         /// <returns></returns>
-        ICriteriaConfigurer<TEntity, TModel> Or(Action<IGroupCriteriaConfigurer<TEntity, TModel>> group);
+        ICriteriaConfigurator<TEntity, TModel> Or(Action<IGroupCriteriaConfigurator<TEntity, TModel>> group);
     }
 
-    public interface IGroupCriteriaConfigurer<TEntity, TModel>
+    public interface IGroupCriteriaConfigurator<TEntity, TModel>
         where TEntity : class
         where TModel : class
     {
-        IScopeCriteriaConfigurer<TEntity, TModel> With(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory,
+        IScopeCriteriaConfigurator<TEntity, TModel> With(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory,
             Action<IRestriction<TModel>> restriction = default);
     }
 
-    public interface IScopeCriteriaConfigurer<TEntity, TModel>
+    public interface IScopeCriteriaConfigurator<TEntity, TModel>
         where TEntity : class
         where TModel : class
     {
@@ -77,17 +77,17 @@
         /// And operand
         /// </summary>
         /// <param name="predicateFactory"></param>
-        /// <param name="restriction">Group criterias configurer</param>
+        /// <param name="restriction">Group criterias configurator</param>
         /// <returns></returns>
-        IScopeCriteriaConfigurer<TEntity, TModel> And(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory,
+        IScopeCriteriaConfigurator<TEntity, TModel> And(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory,
             Action<IRestriction<TModel>> restriction = default);
         /// <summary>
         /// Or operand
         /// </summary>
         /// <param name="predicateFactory"></param>
-        /// <param name="restriction">Group criterias configurer</param>
+        /// <param name="restriction">Group criterias configurator</param>
         /// <returns></returns>
-        IScopeCriteriaConfigurer<TEntity, TModel> Or(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory,
+        IScopeCriteriaConfigurator<TEntity, TModel> Or(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory,
             Action<IRestriction<TModel>> restriction = default);
     }
 }
