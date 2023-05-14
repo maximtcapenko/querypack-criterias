@@ -18,13 +18,13 @@
             Or
         }
 
-        class GroupCriteriaConfigurer : IGroupCriteriaConfigurer<TEntity, TModel>
+        class GroupCriteriaConfigurator : IGroupCriteriaConfigurator<TEntity, TModel>
         {
             private readonly Dictionary<Operator, List<Criteria>> _criterias = new Dictionary<Operator, List<Criteria>>();
 
-            public IScopeCriteriaConfigurer<TEntity, TModel> With(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory, Action<IRestriction<TModel>> restriction = null)
+            public IScopeCriteriaConfigurator<TEntity, TModel> With(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory, Action<IRestriction<TModel>> restriction = null)
             {
-                var criteriaBuilder = new ScopeCriteriaConfigurer(_criterias);
+                var criteriaBuilder = new ScopeCriteriaConfigurator(_criterias);
                 criteriaBuilder.And(predicateFactory, restriction);
                 return criteriaBuilder;
             }
@@ -33,16 +33,16 @@
                 => GenericCriteriaBuilder<TEntity, TModel>.Build(_criterias, model);
         }
 
-        class ScopeCriteriaConfigurer : IScopeCriteriaConfigurer<TEntity, TModel>
+        class ScopeCriteriaConfigurator : IScopeCriteriaConfigurator<TEntity, TModel>
         {
             private readonly Dictionary<Operator, List<Criteria>> _criterias;
 
-            public ScopeCriteriaConfigurer(Dictionary<Operator, List<Criteria>> criterias)
+            public ScopeCriteriaConfigurator(Dictionary<Operator, List<Criteria>> criterias)
             {
                 _criterias = criterias;
             }
 
-            public IScopeCriteriaConfigurer<TEntity, TModel> And(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory, Action<IRestriction<TModel>> restriction = null)
+            public IScopeCriteriaConfigurator<TEntity, TModel> And(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory, Action<IRestriction<TModel>> restriction = null)
             {
                 var criteria = new Criteria(predicateFactory);
                 if (_criterias.TryGetValue(Operator.And, out var predicates))
@@ -55,7 +55,7 @@
                 return this;
             }
 
-            public IScopeCriteriaConfigurer<TEntity, TModel> Or(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory,
+            public IScopeCriteriaConfigurator<TEntity, TModel> Or(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory,
                 Action<IRestriction<TModel>> restriction = null)
             {
                 var criteria = new Criteria(predicateFactory);
@@ -70,16 +70,16 @@
             }
         }
 
-        class CriteriaConfigurer : ICriteriaConfigurer<TEntity, TModel>
+        class CriteriaConfigurator : ICriteriaConfigurator<TEntity, TModel>
         {
             private readonly Dictionary<Operator, List<Criteria>> _criterias;
 
-            public CriteriaConfigurer(Dictionary<Operator, List<Criteria>> criterias)
+            public CriteriaConfigurator(Dictionary<Operator, List<Criteria>> criterias)
             {
                 _criterias = criterias;
             }
 
-            public ICriteriaConfigurer<TEntity, TModel> And(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory, Action<IRestriction<TModel>> restriction = null)
+            public ICriteriaConfigurator<TEntity, TModel> And(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory, Action<IRestriction<TModel>> restriction = null)
             {
                 var criteria = new Criteria(predicateFactory);
                 if (_criterias.TryGetValue(Operator.And, out var predicates))
@@ -92,9 +92,9 @@
                 return this;
             }
 
-            public ICriteriaConfigurer<TEntity, TModel> And(Action<IGroupCriteriaConfigurer<TEntity, TModel>> block)
+            public ICriteriaConfigurator<TEntity, TModel> And(Action<IGroupCriteriaConfigurator<TEntity, TModel>> block)
             {
-                var builder = new GroupCriteriaConfigurer();
+                var builder = new GroupCriteriaConfigurator();
                 block(builder);
                 var criteria = new Criteria(m => builder.Build(m));
                 if (_criterias.TryGetValue(Operator.And, out var criterias))
@@ -105,7 +105,7 @@
                 return this;
             }
 
-            public ICriteriaConfigurer<TEntity, TModel> Or(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory, Action<IRestriction<TModel>> restriction = null)
+            public ICriteriaConfigurator<TEntity, TModel> Or(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory, Action<IRestriction<TModel>> restriction = null)
             {
                 var criteria = new Criteria(predicateFactory);
                 if (_criterias.TryGetValue(Operator.Or, out var criterias))
@@ -118,9 +118,9 @@
                 return this;
             }
 
-            public ICriteriaConfigurer<TEntity, TModel> Or(Action<IGroupCriteriaConfigurer<TEntity, TModel>> block)
+            public ICriteriaConfigurator<TEntity, TModel> Or(Action<IGroupCriteriaConfigurator<TEntity, TModel>> block)
             {
-                var builder = new GroupCriteriaConfigurer();
+                var builder = new GroupCriteriaConfigurator();
                 block(builder);
                 var criteria = new Criteria(m => builder.Build(m));
                 if (_criterias.TryGetValue(Operator.Or, out var criterias))
@@ -173,10 +173,10 @@
             }
         }
 
-        public ICriteriaConfigurer<TEntity, TModel> With(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory,
+        public ICriteriaConfigurator<TEntity, TModel> With(Func<TModel, Expression<Func<TEntity, bool>>> predicateFactory,
             Action<IRestriction<TModel>> restriction = default)
         {
-            var criteriaBuilder = new CriteriaConfigurer(_criterias);
+            var criteriaBuilder = new CriteriaConfigurator(_criterias);
             criteriaBuilder.And(predicateFactory, restriction);
 
             return criteriaBuilder;
