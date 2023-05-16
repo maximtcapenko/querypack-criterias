@@ -2,6 +2,9 @@ namespace QueryPack.Criterias
 {
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Order Direction
+    /// </summary>
     public enum OrderDirection
     {
         Asc = 1,
@@ -12,6 +15,9 @@ namespace QueryPack.Criterias
     /// </summary>
     public interface IOrder
     {
+        /// <summary>
+        /// Order definitions container
+        /// </summary>
         Dictionary<string, OrderDirection> OrderBy { get; set; }
     }
 }

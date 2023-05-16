@@ -5,6 +5,9 @@ namespace QueryPack.Criterias.ImMemory.Ordering.Impl
     using System.ComponentModel;
     using System.Reflection;
 
+    /// <summary>
+    /// Creates enum name comparer which compare enums by enum member names
+    /// </summary>
     public class EnumNameComparerFactory : IComparerFactory
     {
         public bool CanCreate(Type param) => param.IsEnum;

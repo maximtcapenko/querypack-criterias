@@ -1,7 +1,8 @@
 namespace QueryPack.Criterias.Query
 {
-    using System;
-
+    /// <summary>
+    /// Query Configuration
+    /// </summary>
     public interface IQueryConfiguration<TEntity, TModel>
         where TEntity : class
         where TModel : class

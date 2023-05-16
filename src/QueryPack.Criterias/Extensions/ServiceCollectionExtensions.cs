@@ -7,6 +7,9 @@ namespace QueryPack.Criterias.Extensions
     using Query;
     using Query.Impl;
 
+    /// <summary>
+    /// Service Collection Extensions
+    /// </summary>
     public static class ServiceCollectionExtensions
     {
         /// <summary>

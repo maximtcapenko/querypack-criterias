@@ -2,8 +2,10 @@ namespace QueryPack.Criterias
 {
     using System;
     using System.Collections.Generic;
-    using Query;
 
+    /// <summary>
+    /// Order Builder
+    /// </summary>
     public interface IOrderBuilder<TModel>
        where TModel : class
     {

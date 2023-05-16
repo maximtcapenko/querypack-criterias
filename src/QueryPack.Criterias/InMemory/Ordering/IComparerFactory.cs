@@ -2,6 +2,7 @@ namespace QueryPack.Criterias.ImMemory.Ordering
 {
     using System;
     using System.Collections.Generic;
+    
     /// <summary>
     /// Create instance of comparer used in order operation
     /// </summary>

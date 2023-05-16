@@ -7,6 +7,9 @@
     using System.Reflection;
     using System.Text;
 
+    /// <summary>
+    /// Member names container
+    /// </summary>
     public class MemberNames
     {
         public MemberNames(string projectedName, string originalName)
@@ -15,12 +18,17 @@
             OriginalName = originalName;
         }
 
-        public string ProjectedName {get;}
-        public string OriginalName {get;}
+        public string ProjectedName { get; }
+        public string OriginalName { get; }
     }
-
+    /// <summary>
+    /// Expressions Extension
+    /// </summary>
     public static class ExpressionsExtension
     {
+        /// <summary>
+        /// And operand builder
+        /// </summary>
         public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> self, Expression<Func<T, bool>> arg)
         {
             if (self == null)
@@ -33,7 +41,9 @@
 
             return Expression.Lambda<Func<T, bool>>(body, parameter);
         }
-
+        /// <summary>
+        /// Or operand builder
+        /// </summary>
         public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> self, Expression<Func<T, bool>> arg)
         {
             if (self == null)
@@ -99,6 +109,9 @@
             return (expression, nullableMemberType);
         }
 
+        /// <summary>
+        /// Resolves all member expressions from PropertyExpression or NewExpression 
+        /// </summary>
         public static IEnumerable<MemberExpression> GetPropertyExpressions<T>(this Expression<T> self)
         {
             if (self.Body is NewExpression newExpression)

@@ -3,8 +3,14 @@ namespace QueryPack.Criterias
     using System;
     using System.Linq;
 
+    /// <summary>
+    /// Reflection Utils
+    /// </summary>
     public static class ReflectionUtils
     {
+        /// <summary>
+        /// Applies action to classes which implement defined interface
+        /// </summary>
         public static void ProcessGenericInterfaceImpls(Type serviceType, Type interfaceType, Action<Type, Type, string> action)
         {
             if (serviceType.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == interfaceType))
@@ -17,7 +23,9 @@ namespace QueryPack.Criterias
                 }
             }
         }
-
+        /// <summary>
+        /// Gets nullable type
+        /// </summary>
         public static Type GetNullableType(Type type)
             => type switch
             {

@@ -7,6 +7,9 @@ namespace QueryPack.Criterias.ImMemory
     using Ordering;
     using Ordering.Impl;
 
+    ///<summary>
+    /// In-Memory Extensions
+    ///</summary>
     public static class InMemoryExtensions
     {
         ///<summary>

@@ -1,11 +1,12 @@
 namespace QueryPack.Criterias.Query
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Linq.Expressions;
     using Criterias.Impl;
 
+    ///<summary>
+    /// Query CriteriaBuilder Extensions
+    ///</summary>
     public static class QueryCriteriaBuilderExtensions
     {
         ///<summary>
@@ -22,7 +23,7 @@ namespace QueryPack.Criterias.Query
 
             return self;
         }
-        
+
         ///<summary>
         /// Adds a predicate statement to the query visitors pipeline
         ///</summary>
