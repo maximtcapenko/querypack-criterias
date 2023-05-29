@@ -29,7 +29,6 @@ namespace QueryPack.Criterias.Query.Impl
                 _queryVisitorBuilders.Add(visitorBuilder);
             }
 
-
             class AggregateQueryVisitor : IQueryVisitor<TEntity> 
             {
                 private readonly IEnumerable<IQueryVisitorBuilder<TEntity, TModel>> _queryVisitorBuilders;

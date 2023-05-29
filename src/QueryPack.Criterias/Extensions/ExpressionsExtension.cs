@@ -6,6 +6,7 @@
     using System.Linq.Expressions;
     using System.Reflection;
     using System.Text;
+    using ImMemory.Ordering;
 
     /// <summary>
     /// Member names container
@@ -26,6 +27,72 @@
     /// </summary>
     public static class ExpressionsExtension
     {
+        public static IQueryable<TEntity> SetInMemoryOrder<TEntity, TProperty>(IQueryable<TEntity> queryable, ParameterExpression parameter, Expression expression, OrderOptions orderOptions, OrderDirection direction)
+            where TEntity : class
+        {
+            var isDesc = direction == OrderDirection.Desc;
+
+            if (orderOptions != null)
+            {
+                var factory = orderOptions.OrderCompares.FirstOrDefault(e => e.CanCreate(typeof(TProperty)));
+
+                if (factory != null)
+                {
+                    var comparer = factory.GetComparer<TProperty>();
+
+                    return ApplyInMemoryOrder(isDesc, queryable, parameter, expression, comparer);
+                }
+
+                return ApplyInMemoryOrder(isDesc, queryable, parameter, expression);
+            }
+            else
+                return ApplyInMemoryOrder(isDesc, queryable, parameter, expression);
+
+            IQueryable<TEntity> ApplyInMemoryOrder(bool isDesc, IQueryable<TEntity> queryable, ParameterExpression parameter, Expression expression, IComparer<TProperty> comparer = null)
+            {
+                if (comparer != null)
+                {
+                    var lambda = Expression.Lambda<Func<TEntity, TProperty>>(expression, parameter);
+
+                    if (queryable.Expression.Type == typeof(IOrderedQueryable<TEntity>))
+                    {
+                        if (isDesc)
+                            return (queryable as IOrderedQueryable<TEntity>).ThenByDescending(lambda, comparer);
+                        else
+                            return (queryable as IOrderedQueryable<TEntity>).ThenBy(lambda, comparer);
+                    }
+
+                    if (isDesc)
+                        return queryable.OrderByDescending(lambda, comparer);
+
+                    return queryable.OrderBy(lambda, comparer);
+                }
+                else
+                {
+                    return SetOrder<TEntity, TProperty>(queryable, parameter, expression as MemberExpression, direction);
+                }
+            }
+        }
+
+        public static IQueryable<TEntity> SetOrder<TEntity, TMember>(IQueryable<TEntity> query, ParameterExpression param, MemberExpression member, OrderDirection direction)
+          where TEntity : class
+        {
+            var property = Expression.Lambda<Func<TEntity, TMember>>(member, param);
+            if (query.Expression.Type == typeof(IOrderedQueryable<TEntity>))
+            {
+                if (direction == OrderDirection.Desc)
+                    return (query as IOrderedQueryable<TEntity>).ThenByDescending(property);
+                else
+                    return (query as IOrderedQueryable<TEntity>).ThenBy(property);
+            }
+            else
+            {
+                if (direction == OrderDirection.Desc)
+                    return query.OrderByDescending(property);
+                else
+                    return query.OrderBy(property);
+            }
+        }
         /// <summary>
         /// And operand builder
         /// </summary>

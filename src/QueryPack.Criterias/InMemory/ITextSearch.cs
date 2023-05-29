@@ -5,6 +5,9 @@ namespace QueryPack.Criterias.ImMemory
     /// </summary>
     public interface ITextSearch
     {
+        /// <summary>
+        /// The text search parameter
+        /// </summary>
         string TextSearch { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 namespace QueryPack.Criterias.Impl
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
@@ -14,6 +15,9 @@ namespace QueryPack.Criterias.Impl
         private readonly TModel _queryModel;
         private readonly Func<TModel, bool> _validator;
         private readonly Func<TModel, Dictionary<string, OrderDirection>> _directionFactory;
+
+        private static ConcurrentDictionary<MemberExpression, Delegate> _setOrderCache = new ConcurrentDictionary<MemberExpression, Delegate>();
+        private static  MethodInfo _setOrderMethod = typeof(ExpressionsExtension).GetMethod(nameof(ExpressionsExtension.SetOrder), BindingFlags.Static | BindingFlags.Public);
 
         public OrderQueryVisitor(TModel queryModel, Expression<Func<TEntity, TProperty>> property, Func<TModel, bool> validator,
             Func<TModel, Dictionary<string, OrderDirection>> directionFactory)
@@ -35,39 +39,24 @@ namespace QueryPack.Criterias.Impl
             {
                 var container = _directionFactory(_queryModel);
                 var paramExpression = _property.Parameters.First();
-                var method = GetType().GetMethod(nameof(this.SetOrder), BindingFlags.Instance | BindingFlags.NonPublic);
 
                 foreach (var expression in _property.GetPropertyExpressions())
                 {
                     var path = ExpressionsExtension.ResolveMemberPath(expression);
                     if (container.TryGetValue(path, out var direction))
                     {
-                        var generic = method.MakeGenericMethod((expression.Member as PropertyInfo).PropertyType);
-                        query = (IQueryable<TEntity>)generic.Invoke(this, new object[] { paramExpression, expression, query, direction });
+                        var compiledMethod = _setOrderCache.GetOrAdd(expression, (expression) =>
+                        {
+                            var generic = _setOrderMethod.MakeGenericMethod(typeof(TEntity), (expression.Member as PropertyInfo).PropertyType);
+                            return MethodFactory.CreateGenericMethod<IQueryable<TEntity>>(generic);
+                        });
+
+                        query = ((Func<object, object[], IQueryable<TEntity>>)compiledMethod)(null, new object[] { query, paramExpression, expression, direction });
                     }
                 }
             }
 
             return query;
-        }
-
-        private IQueryable<TEntity> SetOrder<TMember>(ParameterExpression param, MemberExpression member, IQueryable<TEntity> query, OrderDirection direction)
-        {
-            var property = Expression.Lambda<Func<TEntity, TMember>>(member, param);
-            if (query.Expression.Type == typeof(IOrderedQueryable<TEntity>))
-            {
-                if (direction == OrderDirection.Desc)
-                    return (query as IOrderedQueryable<TEntity>).ThenByDescending(property);
-                else
-                    return (query as IOrderedQueryable<TEntity>).ThenBy(property);
-            }
-            else
-            {
-                if (direction == OrderDirection.Desc)
-                    return query.OrderByDescending(property);
-                else
-                    return query.OrderBy(property);
-            }
         }
     }
 }
