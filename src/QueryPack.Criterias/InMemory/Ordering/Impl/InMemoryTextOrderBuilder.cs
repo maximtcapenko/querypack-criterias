@@ -1,6 +1,7 @@
 namespace QueryPack.Criterias.ImMemory.Ordering.Impl
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
@@ -9,7 +10,10 @@ namespace QueryPack.Criterias.ImMemory.Ordering.Impl
 
     internal class InMemoryTextOrderBuilder<TEntity> where TEntity : class
     {
-        private static readonly MethodInfo ApplyMethod = typeof(InMemoryTextOrderBuilder<TEntity>).GetMethod(nameof(ApplyOrder), BindingFlags.NonPublic | BindingFlags.Static);
+        private static readonly MethodInfo _setOrderMethod =
+            typeof(ExpressionsExtension).GetMethod(nameof(ExpressionsExtension.SetInMemoryOrder), BindingFlags.Public | BindingFlags.Static);
+        private static ConcurrentDictionary<Expression, Delegate> _setOrderCache = new ConcurrentDictionary<Expression, Delegate>();
+
         private readonly OrderOptions _orderOptions;
 
         public InMemoryTextOrderBuilder() { }
@@ -25,7 +29,7 @@ namespace QueryPack.Criterias.ImMemory.Ordering.Impl
                 return entities;
 
             var result = entities.AsQueryable();
-            var parameterExpression = Expression.Parameter(typeof(TEntity), "e");
+            var parameterExpression = Expression.Parameter(typeof(TEntity));
             foreach (var item in query.OrderBy.OrderBy(e => e.Value))
             {
                 string path = item.Key;
@@ -35,73 +39,20 @@ namespace QueryPack.Criterias.ImMemory.Ordering.Impl
                     continue;
 
                 (var propertyExpression, var propertyType) = parameterExpression.GetPropertyExpressionAndTypeFromPath(path);
-                var method = ApplyMethod.MakeGenericMethod(propertyType);
 
-                bool isDesc = item.Value != OrderDirection.Asc;
-                result = (IQueryable<TEntity>)method.Invoke(this, new object[] { isDesc, result, parameterExpression, propertyExpression, _orderOptions });
+                var compiledMethod = _setOrderCache.GetOrAdd(propertyExpression, (expression) =>
+                {
+                    var generic = _setOrderMethod.MakeGenericMethod(typeof(TEntity), propertyType);
+                    return MethodFactory.CreateGenericMethod<IQueryable<TEntity>>(generic);
+                });
+
+                result = ((Func<object, object[], IQueryable<TEntity>>)compiledMethod)(this, new object[] { result, parameterExpression, propertyExpression, _orderOptions, item.Value  });
             }
 
             return result;
         }
 
         protected virtual string ResolveInternal(string propertyName) => propertyName;
-
-        private static IQueryable<TEntity> ApplyOrder<TProperty>(bool isDesc, IQueryable<TEntity> queryable, ParameterExpression parameter, Expression expression, OrderOptions orderOptions)
-        {
-            if (orderOptions != null)
-            {
-                var factory = orderOptions.OrderCompares.FirstOrDefault(e => e.CanCreate(typeof(TProperty)));
-
-                if (factory != null)
-                {
-                    var comparer = factory.GetComparer<TProperty>();
-
-                    return ApplyInMemoryOrder(isDesc, queryable, parameter, expression, comparer);
-                }
-
-                return ApplyInMemoryOrder<TProperty>(isDesc, queryable, parameter, expression);
-            }
-            else
-                return ApplyInMemoryOrder<TProperty>(isDesc, queryable, parameter, expression);
-        }
-
-        private static IQueryable<TEntity> ApplyInMemoryOrder<TProperty>(bool isDesc, IQueryable<TEntity> queryable, ParameterExpression parameter, Expression expression, IComparer<TProperty> comparer = null)
-        {
-            if (comparer != null)
-            {
-                var lambda = Expression.Lambda<Func<TEntity, TProperty>>(expression, parameter);
-
-                if (queryable.Expression.Type == typeof(IOrderedQueryable<TEntity>))
-                {
-                    if (isDesc)
-                        return (queryable as IOrderedQueryable<TEntity>).ThenByDescending(lambda, comparer);
-                    else
-                        return (queryable as IOrderedQueryable<TEntity>).ThenBy(lambda, comparer);
-                }
-
-                if (isDesc)
-                    return queryable.OrderByDescending(lambda, comparer);
-
-                return queryable.OrderBy(lambda, comparer);
-            }
-            else
-            {
-                var lambda = Expression.Lambda<Func<TEntity, TProperty>>(expression, parameter);
-
-                if (queryable.Expression.Type == typeof(IOrderedQueryable<TEntity>))
-                {
-                    if (isDesc)
-                        return (queryable as IOrderedQueryable<TEntity>).ThenByDescending(lambda);
-                    else
-                        return (queryable as IOrderedQueryable<TEntity>).ThenBy(lambda);
-                }
-
-                if (isDesc)
-                    return queryable.OrderByDescending(lambda);
-
-                return queryable.OrderBy(lambda);
-            }
-        }
     }
 
     internal class InMemoryTextOrderBuilder<TEntity, TProperty> : InMemoryTextOrderBuilder<TEntity>
